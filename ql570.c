@@ -76,7 +76,7 @@ void check_img(pngdata_t * img)
 1b696424006700005a00000000000000000000000000000000000000000000000000000000000000000000000000000000000070700e0000381c070000000000000000000000000000000000000000000000000000000000000000000000000000000000006700
 */
 
-void ql570_print(pngdata_t * img, unsigned int paper_width)
+void ql570_print(pngdata_t * img, unsigned int paper_width)			//praticamente elenco di maschere per varie funzioni es:formato carta, taglio, a capo, margine ecc... potenzialmente mettere in una matrice/typedef
 {
 
 	/* Init */
@@ -269,6 +269,27 @@ void usage(const char* cmd) {
 		exit(EXIT_FAILURE);
 }
 
+// Funzione per caricare il testo da stampare
+char * load_text(const char * text) {
+    // Alloca memoria per il testo
+    char * printed_text = strdup(text); // Utilizza strdup per allocare e copiare la stringa
+
+    // Verifica se l'allocazione della memoria è riuscita
+    if (printed_text == NULL) {
+        fprintf(stderr, "Errore: impossibile allocare memoria per il testo da stampare\n");
+        exit(EXIT_FAILURE);
+    }
+
+    return printed_text;
+}
+
+
+void ql570_print_text(const char * text) {
+    // Inserisci qui la logica per stampare il testo
+    // Ad esempio, potresti usare fprintf per scrivere il testo sul dispositivo di stampa
+    fprintf(fp, "%s", text);
+}
+
 int main(int argc, const char ** argv) {
 
   int cutoff = 180;
@@ -301,11 +322,24 @@ int main(int argc, const char ** argv) {
     usage(argv[0]);
   }
 
+	
+// Carica il testo da stampare
+    char * text_to_print = load_text("Questo è un esempio di testo da stampare.");
+
+    // Stampa il testo
+    ql570_print_text(text_to_print,paper_type);
+
+    // Rilascia la memoria allocata per il testo
+    free(text_to_print);
+return EXIT_SUCCESS;
+
+	
+/*
 	ql570_open(argv[1]);
 	pngdata_t * data = loadpng(argv[3], cutoff);
   //check_img(data);
 	printf("Printing image with width: %d\t and height: %d\n", data->w, data->h);
 	//check_img(data);
 	ql570_print(data, paper_type);
-	return EXIT_SUCCESS;
+	return EXIT_SUCCESS;		*/
 }
